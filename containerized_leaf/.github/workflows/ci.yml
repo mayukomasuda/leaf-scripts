@@ -1,0 +1,40 @@
+name: local_development CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "local_development/**"
+
+jobs:
+  local_dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker info
+        run: docker info
+
+      - name: Prepare Leaf
+        run: |
+          cd local_development
+          chmod +x prepare_compose.sh
+          ./prepare_compose.sh
+
+      - name: Build & start Leaf
+        run: |
+          cd local_development
+          docker compose up -d --build
+
+      - name: Show status
+        run: |
+          cd local_development
+          docker compose ps
+          docker compose logs --tail=200
+
+      - name: Tear down
+        if: always()
+        run: |
+          cd local_development
+          docker compose down -v
