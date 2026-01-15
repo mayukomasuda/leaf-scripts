@@ -12,30 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v5
 
       - name: Docker info
         run: docker info
 
-      - name: Prepare Leaf
-        run: |
-          cd local_development
-          chmod +x prepare_compose.sh
-          ./prepare_compose.sh
+      - name: Fix Preparation Script Permissions
+        working-directory: containerized_leaf/local_development
+        run: chmod +x prepare_compose.sh
 
-      - name: Build & start Leaf
-        run: |
-          cd local_development
-          docker compose up -d --build
+
+      - name: Run Preparation Script 
+        working-directory: containerized_leaf/local_development
+        run: ./prepare_compose.sh
+
+      - name: Docker Compose Build & start Leaf
+        working-directory: containerized_leaf/local_development
+        run: docker compose up -d --build
 
       - name: Show status
+        working-directory: containerized_leaf/local_development
         run: |
-          cd local_development
           docker compose ps
           docker compose logs --tail=200
 
-      - name: Tear down
-        if: always()
-        run: |
-          cd local_development
-          docker compose down -v
