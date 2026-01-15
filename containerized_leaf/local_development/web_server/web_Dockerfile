@@ -24,7 +24,7 @@ RUN sed -i \
 COPY . /app
 WORKDIR /app
 
-COPY ./certs /certs
+#COPY ./certs /certs
 
 RUN npm install --legacy-peer-deps
 RUN npm run build
