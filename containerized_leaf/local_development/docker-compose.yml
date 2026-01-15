@@ -52,6 +52,7 @@ networks:
   leaf-net:
     driver: bridge
 
-
+volumes:
+  sqlserver_data:
 
 
